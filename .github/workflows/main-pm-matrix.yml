@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
@@ -42,7 +42,7 @@ jobs:
 
       - name: Prepare compile.sh download cache
         id: download-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ./download_cache
           key: compile-sh-cache-ssl-https-${{ hashFiles('./compile.sh') }}
@@ -61,7 +61,7 @@ jobs:
           tar -czf ./Z-PHP-${{ inputs.php-version-base }}-Linux-x86_64-PM${{ inputs.pm-version-major }}-debugging-symbols.tar.gz bin-debug
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: PHP-${{ inputs.php-version-base }}-Linux-PM${{ inputs.pm-version-major }}
@@ -76,7 +76,7 @@ jobs:
         run: tar -czf workspace.tar.gz install_data
 
       - name: Upload workspace
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: PHP-${{ inputs.php-version-base }}-Linux-workspace-PM${{ inputs.pm-version-major }}
@@ -89,11 +89,11 @@ jobs:
     runs-on: windows-2022
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Prepare download cache
         id: download-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ./download_cache
           key: windows-cache-${{ hashFiles('./windows-compile-vs.ps1') }}
@@ -114,7 +114,7 @@ jobs:
           move temp\*.zip .
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: PHP-${{ inputs.php-version-base }}-Windows-PM${{ inputs.pm-version-major }}
