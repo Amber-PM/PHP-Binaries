@@ -55,6 +55,9 @@ jobs:
           trap "exit 1" ERR
           ./compile.sh -t linux64 -j 4 -g -F -P ${{ inputs.pm-version-major }} -c ./download_cache -D -z ${{ inputs.php-version-base }}
 
+      - name: Smoke test Linux runtime and php.ini
+        run: bash tests/linux-package-smoke.sh
+
       - name: Create tarball
         run: |
           tar -czf ./PHP-${{ inputs.php-version-base }}-Linux-x86_64-PM${{ inputs.pm-version-major }}.tar.gz bin

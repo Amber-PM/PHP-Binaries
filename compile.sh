@@ -1813,7 +1813,14 @@ echo "error_reporting=-1" >> "$INSTALL_DIR/bin/php.ini"
 echo "display_errors=1" >> "$INSTALL_DIR/bin/php.ini"
 echo "display_startup_errors=1" >> "$INSTALL_DIR/bin/php.ini"
 echo "recursionguard.enabled=0 ;disabled due to minor performance impact, only enable this if you need it for debugging" >> "$INSTALL_DIR/bin/php.ini"
-echo "extension_dir=./$INSTALL_DIR/lib/php/extensions/no-debug-zts-20230831" >> "$INSTALL_DIR/bin/php.ini"
+PHP_EXTENSION_DIR="$("$INSTALL_DIR/bin/php-config" --extension-dir)"
+PHP_EXTENSION_DIR_NAME="${PHP_EXTENSION_DIR##*/}"
+if [[ "$PHP_EXTENSION_DIR_NAME" != no-debug-zts-* ]]; then
+	write_error "Unexpected PHP extension directory: $PHP_EXTENSION_DIR"
+	exit 1
+fi
+# The tarball is extracted into the server working directory as bin/php7/.
+echo "extension_dir=./bin/php7/lib/php/extensions/$PHP_EXTENSION_DIR_NAME" >> "$INSTALL_DIR/bin/php.ini"
 if [ -n "$cafile" ]; then
 	echo "openssl.cafile=$cafile" >> "$INSTALL_DIR/bin/php.ini"
 fi
