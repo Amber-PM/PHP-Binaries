@@ -115,6 +115,7 @@ This script doesn't accept parameters, but the following environment variables a
 | [xxhash](https://github.com/pmmp/ext-xxhash/releases) | Not currently used | Could be replaced by `hash()` in recent versions of PHP but this extension has much better performance |
 | [arraydebug](https://github.com/pmmp/ext-arraydebug/tags) | Debugging array hash collisions | |
 | [encoding](https://github.com/pmmp/ext-encoding/releases) | Disk & network data encoding & decoding | Significantly faster alternative to [BinaryUtils](https://github.com/pmmp/BinaryUtils) |
+| [rtc](https://github.com/Amber-PM/ext-rtc) | NetherNet transport, required by Minecraft 26.60+ | Pinned commit, built after PHP by `build-rtc-linux.sh` / `build-rtc-windows.ps1`. PHP 8.4 on Windows uses the OpenSSL 3.5 deps of the 8.5 series |
 
 ### Misc
 
