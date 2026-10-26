@@ -38,7 +38,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install make autoconf automake libtool libtool-bin m4 wget libc-bin gzip bzip2 bison g++ git re2c \
-            cmake golang-go perl pkg-config libclang-dev clang
+            cmake golang-go perl pkg-config libclang-dev clang ninja-build patchelf
 
       - name: Prepare compile.sh download cache
         id: download-cache
@@ -54,6 +54,9 @@ jobs:
           set -ex
           trap "exit 1" ERR
           ./compile.sh -t linux64 -j 4 -g -F -P ${{ inputs.pm-version-major }} -c ./download_cache -D -z ${{ inputs.php-version-base }}
+
+      - name: Build ext-rtc
+        run: bash build-rtc-linux.sh
 
       - name: Smoke test Linux runtime and php.ini
         run: bash tests/linux-package-smoke.sh
@@ -108,6 +111,10 @@ jobs:
           SOURCES_PATH: ${{ github.workspace }}\pocketmine-php-sdk
           PM_VERSION_MAJOR: ${{ inputs.pm-version-major }}
           PHP_VERSION_BASE: ${{ inputs.php-version-base }}
+
+      - name: Build ext-rtc
+        shell: pwsh
+        run: .\build-rtc-windows.ps1
 
       - name: Prepare artifacts
         run: |

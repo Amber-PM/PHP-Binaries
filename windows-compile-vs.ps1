@@ -404,6 +404,37 @@ function download-php-deps {
     write-download
     sdk-command "phpsdk_deps -u -t $VC_VER -b $PHP_VERSION_BASE -a $ARCH -d $DEPS_DIR || exit 1"
     write-done
+    if ($PHP_VERSION_BASE -eq "8.4") {
+        upgrade-openssl-deps
+    }
+}
+
+#ext-rtc loads libdatachannel built against openssl 3.5 so php 8.4 takes the openssl stack of the 8.5 series
+$OPENSSL_DEPS=@(
+    @{ name = "openssl-3.5.9-vs17-x64.zip"; sha256 = "889b08e67ff0f7aae59f58619f4f73da7b4998ae2b6f96e1a4b0acaf89d6c280" },
+    @{ name = "libcurl-8.23.0-2-vs17-x64.zip"; sha256 = "a208377091dd97af1d6788b466c43d7b5d2ed79971733b68eeaf101be55c570d" },
+    @{ name = "libssh2-1.11.1-10-vs17-x64.zip"; sha256 = "41b6faddea9a2c32176538f2884a9581967d07ab93291274ead94ab477fc37a9" }
+)
+
+function upgrade-openssl-deps {
+    write-library "PHP prebuilt deps OpenSSL 3.5" "$VC_VER"
+    write-download
+    $staging = "$DEPS_DIR-openssl"
+    Remove-Item -Recurse -Force $staging -ErrorAction SilentlyContinue
+    foreach ($dep in $OPENSSL_DEPS) {
+        $file = download-file "https://downloads.php.net/~windows/php-sdk/deps/$VC_VER/$ARCH/$($dep.name)" "phpdeps"
+        if ((Get-FileHash $file -Algorithm SHA256).Hash.ToLower() -ne $dep.sha256) {
+            pm-fatal-error "Checksum mismatch for $($dep.name)"
+        }
+        unzip-file $file "$staging\$($dep.name)"
+    }
+    write-install
+    Remove-Item -Recurse -Force "$DEPS_DIR\include\openssl", "$DEPS_DIR\include\curl" -ErrorAction SilentlyContinue
+    foreach ($dep in $OPENSSL_DEPS) {
+        Copy-Item -Recurse -Force "$staging\$($dep.name)\*" "$DEPS_DIR\"
+    }
+    Remove-Item -Recurse -Force $staging
+    write-done
 }
 
 function build-snappy {
