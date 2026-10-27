@@ -63,7 +63,10 @@ jobs:
 
       - name: Create tarball
         run: |
-          tar -czf ./PHP-${{ inputs.php-version-base }}-Linux-x86_64-PM${{ inputs.pm-version-major }}.tar.gz bin
+          # panel file managers turn symlinks into empty files so ship real copies
+          find bin -xtype l -print -delete
+          tar -czh --hard-dereference -f ./PHP-${{ inputs.php-version-base }}-Linux-x86_64-PM${{ inputs.pm-version-major }}.tar.gz bin
+          test -z "$(tar -tvzf ./PHP-${{ inputs.php-version-base }}-Linux-x86_64-PM${{ inputs.pm-version-major }}.tar.gz | grep -v '^-' | grep -v '^d')"
           tar -czf ./Z-PHP-${{ inputs.php-version-base }}-Linux-x86_64-PM${{ inputs.pm-version-major }}-debugging-symbols.tar.gz bin-debug
 
       - name: Upload artifacts
