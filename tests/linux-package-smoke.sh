@@ -28,7 +28,7 @@ fi
 
 "$php" -c "$ini" -r '
     if (!PHP_ZTS) { fwrite(STDERR, "ZTS is missing\n"); exit(1); }
-    foreach (["pmmpthread", "leveldb", "crypto", "encoding", "libdeflate", "chunkutils2", "igbinary", "morton", "yaml", "Zend OPcache", "ext-quiche", "rtc"] as $extension) {
+    foreach (["pmmpthread", "leveldb", "crypto", "encoding", "libdeflate", "chunkutils2", "igbinary", "morton", "yaml", "Zend OPcache", "rtc"] as $extension) {
         if (!extension_loaded($extension)) {
             fwrite(STDERR, "Missing PHP extension: " . $extension . "\n");
             exit(1);

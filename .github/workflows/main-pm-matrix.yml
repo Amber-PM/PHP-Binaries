@@ -53,7 +53,8 @@ jobs:
           # Used "set -ex" instead of hashbang since script isn't executed with hashbang
           set -ex
           trap "exit 1" ERR
-          ./compile.sh -t linux64 -j 4 -g -F -P ${{ inputs.pm-version-major }} -c ./download_cache -D -z ${{ inputs.php-version-base }}
+          # amber does not use ext-quiche and its rust bindings need a newer clang than ubuntu 22.04 ships
+          HAVE_QUICHE=no ./compile.sh -t linux64 -j 4 -g -F -P ${{ inputs.pm-version-major }} -c ./download_cache -D -z ${{ inputs.php-version-base }}
 
       - name: Build ext-rtc
         run: bash build-rtc-linux.sh
